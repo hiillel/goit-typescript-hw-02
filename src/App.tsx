@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import SearchBar from "./components/SearchBar/SearchBar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Loader from "./components/Loader/Loader";
@@ -9,16 +9,28 @@ import ImageModal from "./components/ImageModal/ImageModal";
 import { Toaster, toast } from "react-hot-toast";
 import "./App.css";
 
-const App = () => {
-  const [images, setImages] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState(null);
-  const [mainLoading, setMainLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
+interface Image {
+  id: string;
+  urls: {
+    regular: string;
+  };
+}
+
+interface ApiResponse {
+  results: Image[];
+  total_pages: number;
+}
+
+const App: React.FC = () => {
+  const [images, setImages] = useState<Image[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [error, setError] = useState<AxiosError | null>(null);
+  const [mainLoading, setMainLoading] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   useEffect(() => {
     if (searchQuery !== "") {
@@ -26,17 +38,17 @@ const App = () => {
       setError(null);
 
       axios
-        .get(
+        .get<ApiResponse>(
           `https://api.unsplash.com/search/photos?page=${currentPage}&query=${searchQuery}&client_id=j2dKGfoZPwz7_wS0rkmgVXCHfszEyOuHoksVie8iG1Y`
         )
-        .then((res) => {
+        .then((res: AxiosResponse<ApiResponse>) => {
           setImages((prevImages) => [...prevImages, ...res.data.results]);
           setTotalPages(res.data.total_pages);
           if (res.data.results.length === 0) {
             toast.error("Nothing was found for your request");
           }
         })
-        .catch((err) => {
+        .catch((err: AxiosError) => {
           setError(err);
         })
         .finally(() => {
@@ -46,7 +58,7 @@ const App = () => {
     }
   }, [searchQuery, currentPage]);
 
-  const handleSubmit = (searchQuery) => {
+  const handleSubmit = (searchQuery: string): void => {
     if (searchQuery.trim() !== "") {
       setSearchQuery(searchQuery);
 
@@ -57,19 +69,19 @@ const App = () => {
     }
   };
 
-  const loadMoreImages = () => {
+  const loadMoreImages = (): void => {
     if (currentPage < totalPages) {
       setLoadingMore(true);
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
-  const openModal = (image) => {
+  const openModal = (image: Image): void => {
     setSelectedImage(image);
     setModalIsOpen(true);
   };
 
-  const closeModal = () => setModalIsOpen(false);
+  const closeModal = (): void => setModalIsOpen(false);
 
   return (
     <div>
