@@ -1,0 +1,23 @@
+.backdrop {
+    position: fixed;
+    inset: 2px;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1000; 
+}
+   
+.modalWindow {
+    position: fixed;
+    top: 40px;
+    bottom: 40px;
+    overflow: hidden;
+    border: 1.5px solid #482973;
+    border-radius: 8px;
+}
+  
+.imageModal {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}

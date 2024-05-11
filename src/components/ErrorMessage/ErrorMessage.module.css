@@ -1,0 +1,9 @@
+.errorMessage {
+  background-color: #f8d7da; /* Червоний фон */
+  color: #721c24; /* Темно-червоний текст */
+  padding: 10px; /* Поля від тексту */
+  border: 1px solid #f5c6cb; /* Обрамлення */
+  border-radius: 5px; /* Закруглені кути */
+  margin-bottom: 10px; /* Відступ знизу */
+  font-size: 36px;
+}
